@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Menu</title>
+</head>
+<body>
+
+	<div id='menuContainer'></div>
+
+	<script>
+		var MenuA=
+[
+  {name:'Пункт 1',submenu:
+    [
+      {name:'Пункт 1.1',submenu:
+        [
+          {name:'Пункт 1.1.1',url:'http://www.tut.by'},
+          {name:'Пункт 1.1.2 длинный',url:'http://www.tut.by'}
+        ]
+      },
+      {name:'Пункт 1.2',url:'http://www.tut.by'},
+      {name:'Пункт 1.3 длинный',submenu:
+        [
+          {name:'Пункт 1.3.1',url:'http://www.tut.by'},
+          {name:'Пункт 1.3.2',url:'http://www.tut.by'},
+          {name:'Пункт 1.3.3',url:'http://www.tut.by'},
+          {name:'Пункт 1.3.4 длинный',url:'http://www.tut.by'}
+        ]
+      }
+    ]
+  },
+  {name:'Пункт 2 длинный',url:'http://www.tut.by'},
+  {name:'Пункт 3',submenu:
+    [
+      {name:'Пункт 3.1 длинный',url:'http://www.tut.by'},
+      {name:'Пункт 3.2',url:'http://www.tut.by'}
+    ]
+  }
+];
+
+var menuContainer = document.getElementById('menuContainer');
+
+
+function createTree(container, arr){
+	container.appendChild(createTreeDom(arr));
+}
+
+function createTreeDom(arr){
+	var div = document.createElement('div');
+
+
+	for(var i=0; i<arr.length; i++){
+		if( arr[i]['url'] != undefined ) {
+			var li1 = document.createElement('li');
+			var a = document.createElement('a');
+			a.setAttribute('href', arr[i]['url']);
+			a.innerHTML = arr[i]['name'];
+			li1.appendChild(a);
+      li1.style.cssText = 'background : red; display: inline-block; border: solid 1px';
+			div.appendChild(li1);
+		}else{
+			var li1 = document.createElement('li');
+			li1.innerHTML = arr[i]['name'];
+      li1.appendChild(createTreeDom(arr[i]['submenu']));
+      li1.setAttribute('class', 'open');
+      li1.style.cssText = 'background : yellow; display: inline-block; border: solid 1px';
+      li1.addEventListener( 'mouseover', showChildren, true );
+      li1.addEventListener( 'mouseout', hideChildren, true );
+      div.appendChild(li1);
+		}
+	}
+	return div;
+}
+
+createTree(menuContainer, MenuA);
+
+var div1 = menuContainer.children[0];
+for(var i = 0; i<3; i++){
+  var li1 = div1.children[i];
+  li1.style.cssText='display: inline-block; padding: 10px; border: solid 1px; background: yellow; position: relative';
+  if(li1.children[0].children[0]){
+     li1.children[0].style.cssText='display: none';
+	}
+}
+
+
+function showChildren(el){
+  var lis = this.children[0].childNodes;
+  var div = this.children[0];
+  this.style.position ='relative';
+
+  if( this.parentNode.parentNode.hasAttribute('class') ){
+    div.style.cssText='position: absolute; left: 120px; top: 5px; width: 150px';
+  }
+  else{
+   div.style.cssText='position: absolute; left: 0px; top: 35px; width: 150px';
+    div.style.zIndex = 1000;
+  }
+
+  for(var e=0; e<lis.length; e++){
+    lis[e].style.cssText='display: inline-block; border: solid 1px; background: yellow; width: 150px';
+
+    if(lis[e].hasAttribute('class')){
+      lis[e].children[0].style.cssText = 'display: none';
+    }
+
+  }
+
+  this.appendChild(div);
+}
+
+function hideChildren(el){
+  var div = this.children[0];
+  div.style.cssText = 'display: none';
+}
+
+	</script>
+</body>
+</html>
